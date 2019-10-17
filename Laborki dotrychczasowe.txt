@@ -1,0 +1,315 @@
+USE [BD1d_pn_1B]
+GO
+/*=================================================================================================
+LAB 1
+/*
+SELECT //CO MA BRAC
+FROM	/SKAD MA WZIAC
+DISTINCT-BEZ POWTARZANIA
+TOP- NP TOP10 I WTEDY 
+ORDER BY- SORTUJPRZEZ COS NP ORDER BY CENAJEDNOSTKOWA
+DESC dopisujemy zeby sortowlo malejaco
+*/
+
+/* 
+Zadanie 1:
+Przygotowac liste adresowa dostawcow (nazwa dostawcy, pelny adres) posortowac wg kraju i miasta
+*/
+SELECT Przedstawiciel, Adres, Miasto, Region, KodPocztowy, Kraj
+FROM Dostawcy
+ORDER BY KRAJ, MIASTO;
+
+/* 
+Zadanie 2:
+przygotowac liste produktow z cenami. posortowac malejaca wg stanu magazynu
+*/
+SELECT NazwaProduktu, CenaJednostkowa
+FROM Produkty
+ORDER BY StanMagazynu DESC;
+/* 
+Zadanie 3:
+Lista miast wystepujacych we wszystkich adresach. sortowanie wg miasta ronsnaco bez powtorzen (distinc)
+*/
+SELECT Miasto
+FROM Dostawcy
+UNION /*PO DODANIU "UNION ALL" BEDA POWTORZENIA*/
+	SELECT Miasto
+	FROM Klienci
+UNION
+	SELECT Miasto
+	FROM Pracownicy
+ORDER BY Miasto
+/* 
+Zadanie 4:
+Spis imion wystepujacych w calej bazie danych. Sortowanie jw.
+*/
+SELECT DISTINCT Imiê
+FROM Pracownicy
+ORDER BY Imiê;
+/* 
+Zadanie 5:
+Wyswietlic liste produktow z kategorii pierwszej i trzeciej.
+*/
+SELECT NazwaProduktu, IDkategorii
+FROM Produkty
+WHERE IDkategorii=1 OR IDkategorii = 3
+ORDER BY IDkategorii, NazwaProduktu
+=================================================================================================*/
+
+/* Lab.02 10-10-2019 */
+
+/* 1 */
+
+/*
+SELECT NazwaFirmy Firma
+FROM Klienci
+WHERE NazwaFirmy = 'Alfreds Futterkiste';
+*/ 
+
+/* 2 */
+
+/*
+SELECT NazwaFirmy Firma
+FROM Klienci
+WHERE NazwaFirmy LIKE 'A%';
+*/
+
+/* 3 */
+
+/*
+SELECT NazwaFirmy Firma
+FROM Klienci
+WHERE NazwaFirmy LIKE '_____ %';
+*/
+
+/* 4.1 */
+
+/*
+SELECT NazwaFirmy Firma
+FROM Klienci
+WHERE NazwaFirmy LIKE 'A%' OR NazwaFirmy LIKE 'B%' OR NazwaFirmy LIKE 'C%' OR NazwaFirmy LIKE 'K';
+*/
+
+/*4.2*/
+
+/*
+SELECT NazwaFirmy Firma
+FROM Klienci
+WHERE NazwaFirmy LIKE 'A%' OR NazwaFirmy LIKE 'B%' OR NazwaFirmy LIKE 'C%' OR NazwaFirmy LIKE 'K';
+*/
+
+/*4.3*/
+
+/*
+SELECT NazwaFirmy Firma
+FROM Klienci
+WHERE NazwaFirmy LIKE '[A|B|C|K]';
+*/
+
+/*5.1*/
+
+/*
+SELECT NazwaFirmy Firma
+FROM Klienci
+WHERE NazwaFirmy LIKE '____[a, A]_[a, A]%';
+*/
+
+/*5.2*/
+
+/*
+SELECT NazwaProduktu Produkt
+FROM Produkty
+WHERE NazwaProduktu LIKE '_____';
+*/
+
+/*5.3*/
+
+/*
+SELECT NazwaFirmy Firma
+FROM Klienci
+WHERE NazwaFirmy LIKE '%ab%';
+*/
+
+
+/*6.1*/
+
+/*
+SELECT IDzamówienia, IDklienta, DataZamówienia
+FROM Zamówienia
+WHERE DataZamówienia >= '1996-09-01'
+ORDER BY DataZamówienia DESC;
+*/
+
+/*6.2*/
+
+/*
+SELECT IDzamówienia, IDklienta, DataZamówienia
+FROM Zamówienia
+WHERE DataZamówienia BETWEEN '1996-08-01' AND '1996-08-31'
+ORDER BY DataZamówienia DESC;
+*/
+
+/*6.3*/
+
+/*
+SELECT IDzamówienia, IDklienta, DataZamówienia
+FROM Zamówienia
+WHERE (MONTH(DataZamówienia) =8 AND (YEAR(DataZamówienia)= 1996)
+ORDER BY DataZamówienia DESC;
+*/
+
+
+/* Numer zamowien w ktorych czas realizacji jest wiekszy niz 10 dni*/
+
+SELECT IDzamówienia, IDklienta, DataZamówienia, DataWysy³ki, (DAY(DataWysy³ki) - DAY(DataZamówienia)) [Realizacja v1],
+															 (DAY(DataWysy³ki - DataZamówienia)) -1 [Realizacja v2]
+FROM Zamówienia;
+
+/*Id pracownika ktory pracowal IX 1997 */
+
+SELECT DISTINCT IDpracownika, DataZamówienia
+FROM Zamówienia
+WHERE (MONTH(DataZamówienia) =9 AND (YEAR(DataZamówienia)= 1997) AND (DAY(DataZamówienia)) <3);
+
+/* Nazwa, cena jednostkowa, ilsoc, warrtosc calosci*/
+
+SELECT NazwaProduktu, CenaJednostkowa, StanMagazynu, CenaJednostkowa* StanMagazynu [Cena Netto],
+												    (CenaJednostkowa* StanMagazynu) * 0.23 [Podatek VAT],
+													(CenaJednostkowa* StanMagazynu) * 1.23 [Cena Brutto]
+FROM Produkty
+
+
+/*Wartosc vat >1000zl */
+SELECT NazwaProduktu, CenaJednostkowa, StanMagazynu, CenaJednostkowa* StanMagazynu [Cena Netto],
+												    (CenaJednostkowa* StanMagazynu) * 0.23 [Podatek VAT],
+													(CenaJednostkowa* StanMagazynu) * 1.23 [Cena Brutto]
+FROM Produkty
+
+/* ZADANIA DO WYKONANIA */
+ /*
+ 1. Przygotowac liste miejscowosci z zakresu liter od a do h oraz od m do p //dane z tabeli klienci//
+ 2. Znalezc firmy z usa lub majace przedstawicieli o szescioliterowych imionach
+ 3. Podac identyfikatory klientow  ktorzy  skladali zamowienia w lipcu 1997
+ 4. Podac identyfikatory pracownikow ktorzy nie przyjmowali zamowien w poniedzialki w grudniu 1997
+ 5. Podac listê 5% najdrozszych pozycji zamowien. Id zamowienia, zamowienia, datazazmowienia, wartosc zamowienia.
+ */
+
+ /*1 */
+ SELECT Miasto 
+ FROM Klienci
+ WHERE Miasto LIKE '[a-h,m-p]%'
+ ORDER BY Miasto;
+
+ /*2*/
+
+ SELECT NazwaFirmy, Kraj , Przedstawiciel
+ FROM Klienci
+ WHERE Kraj = 'USA' OR Przedstawiciel LIKE '______' 
+ ORDER BY NazwaFirmy;
+
+ /*3*/
+ SELECT IDklienta, DataZamówienia
+ FROM Zamówienia
+ WHERE (MONTH(DataZamówienia) =7 AND (YEAR(DataZamówienia)= 1997));
+ 
+ /*4*/
+ SELECT IDpracownika, DataZamówienia
+ FROM Zamówienia
+ WHERE IDpracownika NOT IN (SELECT DISTINC IDpracownika
+							FROM Zamówienia
+							WHERE MONTH(DataZamówienia) =12, AND YEAR(DataZamówienia)=1996, AND DATEPART(dw,DataZamówienia)=2
+ /*5*/
+ SELECT TOP(5) PERCENT IDzamówienia, CenaJednostkowa*Iloœæ WARTOSC
+ FROM PozycjeZamówienia
+ ORDER BY WARTOSC DESC;
+
+ /*=============================================================================
+ Lab.03 17.10.2019
+ */
+
+ /* 1a. Iloczyn kartezjanski */
+ SELECT p1.Imiê + ' (p1' + ')' P1, p2.Imiê + ' (p2' + ')' P2
+ FROM Pracownicy p1, Pracownicy p2
+ ORDER BY P1, P2;
+ /* 1b. Iloczyn kartezjanski -- -- -- -- -- Z³¹czenia */
+ SELECT p1.Szef Szef, p2.IDpracownika Pracownik
+ FROM Pracownicy p1, Pracownicy p2
+ 
+ /* 2a. Iloczyn kartezjanski -- lista szefow */
+ SELECT DISTINCT p1.Szef Szef, p2.Imiê , p2.Nazwisko
+ FROM Pracownicy p1, Pracownicy p2
+ WHERE p1.Szef = p2.IDpracownika
+ ORDER BY p2.Nazwisko;
+
+ 
+ /* 2b. Iloczyn kartezjanski -- lista pracownikow dla wskazanego szefa */
+
+ SELECT DISTINCT Szef, Imiê , Nazwisko
+ FROM Pracownicy
+ WHERE Szef = 2
+ ORDER BY Nazwisko;
+
+ /* 2c. imie nazwisko szefa i imie nazwisko pracownika   | standard |  */
+
+ SELECT (s.Imiê + ' ' + s.Nazwisko) Szef, (p.Imiê + p.Nazwisko) Pracownik
+ FROM Pracownicy s, Pracownicy p
+ WHERE s.IDpracownika = p.Szef
+ ORDER BY s.Nazwisko, s.Imiê, p.Nazwisko, p.Imiê;
+
+ 
+ /* 2d. lista pracownikow szefa nr np. 2  */
+
+ SELECT (s.Imiê + ' ' + s.Nazwisko) Szef, (p.Imiê + p.Nazwisko) Pracownik
+ FROM Pracownicy s, Pracownicy p
+ WHERE s.IDpracownika = p.Szef AND (s.Szef = 2 OR s.Szef =13)
+ ORDER BY s.Nazwisko, s.Imiê, p.Nazwisko, p.Imiê;
+
+ /* 2d.1 . lista pracownikow szefa nr np. 2====== wprowadzamy zlazcenie JOIN (a tak naprawde to INNER JOIN)  
+ Uwaga na OUTER JOIN 
+ */
+
+ SELECT (s.Imiê + ' ' + s.Nazwisko) Szef, (p.Imiê + p.Nazwisko) Pracownik
+ FROM Pracownicy s INNER JOIN  Pracownicy p ON s.IDpracownika = p.Szef 
+ WHERE s.Szef = 2
+ ORDER BY s.Nazwisko, s.Imiê, p.Nazwisko, p.Imiê;
+
+ /*3 - lista produktow (kategoria) i ceny */
+ SELECT p.NazwaProduktu + ' (' + k.NazwaKategorii + ') ' Produkt, p.CenaJednostkowa [Cena Netto]
+ FROM Produkty p INNER JOIN Kategorie k ON p.IDkategorii = k. IDkategorii
+ ORDER BY p.IDproduktu;
+
+ /* 4- Lista zamowien (id zamowienia) z nazwami klientow (nazwa firmy)  */
+ SELECT (z.IDzamówienia + ' (' + k.NazwaFirmy + ') ') [Zamowienia ID], k.NazwaFirmy [Nazwa Firmy]
+ FROM Zamówienia z INNER JOIN Klienci k ON z.IDklienta = k.IDklienta
+ ORDER BY k.NazwaFirmy;
+ /* 5- Lista dostawcow (nazwa dostawcy i kraj) oraz nazwa produktu */
+ SELECT d.NazwaFirmy +' ('+ d.Kraj +') ' Dostawca, p.NazwaProduktu Produkt
+ FROM Produkty p INNER JOIN Dostawcy d ON p.IDdostawcy = d.IDdostawcy
+ ORDER BY d.NazwaFirmy;
+ /* 6- Lista klientoiw i daty ich zamowien  */
+ SELECT k.NazwaFirmy Klient, z.DataZamówienia DataZamowienia
+ FROM Zamówienia z INNER JOIN Klienci k ON z.IDklienta=k.IDklienta
+ ORDER BY k.NazwaFirmy, z.DataZamówienia;
+
+ /*7 lista kategorii z (nazwami dostawcow) */
+ SELECT DISTINCT k.NazwaKategorii Kategoria, d.NazwaFirmy Dostawca
+ FROM Kategorie k INNER JOIN Produkty p ON k.IDkategorii = p.IDkategorii INNER  JOIN Dostawcy d ON d.IDdostawcy= p.IDdostawcy
+ /*8 lista zamowien z (krajem dostawcy produktu) */
+ SELECT pz.IDzamówienia IdZamowienia, p.NazwaProduktu NazwaProduktu, d.Kraj Kraj
+ FROM PozycjeZamówienia pz INNER JOIN Produkty p ON pz.IDproduktu = p.IDproduktu INNER JOIN Dostawcy d ON d.IDdostawcy = p.IDdostawcy
+
+ /*9  Dane typu Klient-Pracownik na podstawie analizy zamowien*/
+ SELECT DISTINCT k.NazwaFirmy Klient, p.Imiê + ' '+ p.Nazwisko Pracownik
+ FROM Klienci k INNER JOIN Zamówienia z ON k.IDklienta = z.IDklienta INNER JOIN Pracownicy p ON z.IDpracownika = p.IDpracownika;
+
+/*10 Przygotowac dane faktury do zamowienia nr .... */
+
+SELECT * 
+FROM  
+
+/*11  Sprawdzic czy istnieja takie same miasta wsrod adresatow pracownikow i klientow */
+
+
+
+/*12 Sprawdzic czy istnieje takie same miasta wsrod adresow pracownikow dostawcow i klientow  */
+
